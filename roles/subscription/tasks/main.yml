@@ -1,0 +1,26 @@
+---
+# tasks file for subscription
+- name: redhat_subscription | subscribe
+  redhat_subscription:
+    state: present
+    username: "{{ subscription_account }}"
+    password: "{{ subscription_passwd }}"
+    pool_ids: "{{ subscription_pool }}"
+    release: '8.2'
+  register: subscribed
+  no_log: True
+  become: True
+
+- name: dnf | Update server
+  dnf:
+    name: '*'
+    state: latest
+  register: dnfupdate
+  when: subscribed is changed
+  become: True
+
+- name: reboot | Reboot if updated
+  reboot:
+    reboot_timeout: '600'
+  when: dnfupdate is changed
+  become: True

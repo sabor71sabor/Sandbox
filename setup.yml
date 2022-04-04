@@ -1,0 +1,31 @@
+---
+- hosts: all
+  gather_facts: True
+
+  tasks:
+
+  - name: user | Create account
+    user:
+      comment: 'Account for Ansible'
+      create_home: True
+      name: sabor
+      shell: /bin/bash
+      state: present
+      uid: '5000'
+  
+  - name: authorized_key | Setup authorized_key
+    authorized_key:
+      exclusive: True
+      key: "{{ lookup('file', '/Users/harm/.ssh/id_ecdsa.pub') }}"
+      manage_dir: True
+      state: present
+      user: sabor
+
+  - name: lineinfile | setup sudo
+    lineinfile:
+      create: True
+      line: 'sabor ALL=(ALL) NOPASSWD: ALL'
+      path: /etc/sudoers.d/sabor
+      regexp: 'sabor ALL='
+      state: present
+      validate: '/usr/sbin/visudo -cf %s'

@@ -1,0 +1,5 @@
+---
+# handlers file for subscription
+- name: Reboot
+  command: systemctl reboot
+  become: True

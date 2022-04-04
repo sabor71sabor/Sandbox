@@ -1,0 +1,23 @@
+---
+# tasks file for firewall
+- name: firewalld | Setup firewall
+  firewalld:
+    immediate: True
+    rich_rule: 'rule family=ipv4 service name={{ item.key }} source address="{{ item.value.allow }}" accept'
+    state: enabled
+  register: setup_firewall
+  loop: "{{ lookup('dict', fw_rules, wantlist=True) }}"
+  become: True
+
+- name: "firewalld | Unconfigure default services"
+  firewalld:
+    immediate: True
+    service: "{{ item }}"
+    state: disabled
+  register: disbale_default_fw
+  loop:
+    - ssh
+    - cockpit
+    - dhcpv6-client
+  notify: Save_firewall_state
+  become: True

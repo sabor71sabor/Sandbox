@@ -1,0 +1,5 @@
+---
+# handlers file for firewall
+- name: Save_firewall_state
+  command: firewall-cmd --runtime-to-permanent
+  become: True

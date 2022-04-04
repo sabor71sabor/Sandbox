@@ -1,0 +1,9 @@
+---
+# vars file for firewall
+fw_rules:
+  ssh:
+    allow: "213.127.0.0/16"
+  cockpit:
+    allow: "213.127.0.0/16"
+  https:
+    allow: "213.127.0.0/16"
